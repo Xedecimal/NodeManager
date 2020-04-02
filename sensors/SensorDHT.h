@@ -23,51 +23,59 @@
 SensorDHT
 */
 
-#include <DHT.h>
+#include <SimpleDHT.h>
 
 class SensorDHT: public Sensor {
 	
 protected:
-	DHT* _dht;
-	int _dht_type;
+	SimpleDHT11* _dht;
+	// int _dht_type;
 	float _offset = 0;
 	
 public:
 	SensorDHT(int8_t pin, uint8_t child_id = 0): Sensor(pin) {
 		_name = "DHT";
-		_dht_type = DHT::DHT11;
+		// _dht_type = DHT11;
 		children.allocateBlocks(2);
 		new Child(this,FLOAT,nodeManager.getAvailableChildId(child_id),S_TEMP,V_TEMP,_name);
-		new Child(this,FLOAT,child_id > 0 ? nodeManager.getAvailableChildId(child_id+1) : nodeManager.getAvailableChildId(child_id),S_HUM,V_HUM,_name);
+		new Child(this,FLOAT,child_id > 0
+			? nodeManager.getAvailableChildId(child_id+1)
+			: nodeManager.getAvailableChildId(child_id),S_HUM,V_HUM,_name);
 	};
 
 	// define what to do during setup
 	void onSetup() {
 		// store the dht object
-		_dht = new DHT();
-		// initialize the dht library
-		_dht->setup(_pin,(DHT::DHT_MODEL_t)_dht_type);
+		_dht = new SimpleDHT11(_pin);
 	};
 	
 	// define what to do during setup
 	void onLoop(Child* child) {
-		nodeManager.sleepOrWait(_dht->getMinimumSamplingPeriod());
-		_dht->readSensor(true);
-		// temperature sensor
+		Serial.println("SensorDHT: Loop hit.");
+
+		byte temperature = 0;
+  		byte humidity = 0;
+
+		Serial.println("SensorDHT: Calling dht->read.");
+		int err = SimpleDHTErrSuccess;
+		if ((err = _dht->read(&temperature, &humidity, NULL)) != SimpleDHTErrSuccess) {
+			Serial.print("Read DHT11 failed, err="); Serial.println(err); delay(1000);
+			return;
+		}
+
 		if (child->getType() == V_TEMP) {
-			// read the temperature
-			float temperature = _dht->getTemperature();
-			if (!nodeManager.getIsMetric()) temperature = _dht->toFahrenheit(temperature);
-			// store the value
+			Serial.println("SensorDHT: Read V_TEMP");
 			child->setValue(temperature);
 		}
+
 		// humidity sensor
 		else if (child->getType() == V_HUM) {
-			// read humidity
-			float humidity = _dht->getHumidity();
-			// store the value
+			Serial.println("SensorDHT: Read V_HUM");
 			child->setValue(humidity);
 		}
+
+		// Serial.println("SensorDHT: Sleeping...");
+		// nodeManager.sleepOrWait(1000);
 	};
 };
 #endif
