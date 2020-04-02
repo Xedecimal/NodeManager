@@ -122,7 +122,7 @@ public:
 		children.get()->setPersistValue(true);
 #else
 		// turn the output off by default
-		setStatus(OFF);
+		// setStatus(OFF);
 #endif
 	};
 
