@@ -27,7 +27,7 @@ Child::Child() {
 }
 
 // constructor
-Child::Child(Sensor* sensor, value_format format, uint8_t child_id, uint8_t presentation, uint8_t type, const char* description) {
+Child::Child(Sensor* sensor, value_format format, uint8_t child_id, mysensors_sensor_t presentation, uint8_t type, const char* description) {
 	_sensor = sensor;
 	setFormat(format);
 	_child_id = child_id;
@@ -58,10 +58,10 @@ void Child::setFormat(value_format value) {
 value_format Child::getFormat() {
 	return _format;
 }
-void Child::setPresentation(uint8_t value) {
+void Child::setPresentation(mysensors_sensor_t value) {
 	_presentation = value;
 }
-uint8_t Child::getPresentation() {
+mysensors_sensor_t Child::getPresentation() {
 	return _presentation;
 }
 void Child::setType(uint8_t value) {

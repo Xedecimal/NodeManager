@@ -41,7 +41,7 @@ class Sensor;
 class Child {
 public:
 	Child();
-	Child(Sensor* sensor, value_format format, uint8_t child_id, uint8_t presentation, uint8_t type, const char* description = "");
+	Child(Sensor* sensor, value_format format, uint8_t child_id, mysensors_sensor_t presentation, uint8_t type, const char* description = "");
 	// set child id used to communicate with the gateway/controller
 	void setChildId(uint8_t value);
 	uint8_t getChildId();
@@ -49,8 +49,8 @@ public:
 	void setFormat(value_format value);
 	value_format getFormat();
 	// set sensor presentation (default: S_CUSTOM)
-	void setPresentation(uint8_t value);
-	uint8_t getPresentation();
+	void setPresentation(mysensors_sensor_t value);
+	mysensors_sensor_t getPresentation();
 	// set sensor type (default: V_CUSTOM)
 	void setType(uint8_t value);
 	uint8_t getType();
@@ -111,7 +111,7 @@ protected:
 	Sensor* _sensor;
 	value_format _format;
 	uint8_t _child_id;
-	uint8_t _presentation = S_CUSTOM;
+	mysensors_sensor_t _presentation = S_CUSTOM;
 	uint8_t _type = V_CUSTOM;
 	const char* _description = "";
 	unsigned int _samples = 0;
