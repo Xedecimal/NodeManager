@@ -63,8 +63,7 @@ public:
 			return;
 		}
 
-		nodeManager.sleepOrWait(_dht->getMinimumSamplingPeriod()+500);
-		_dht->readSensor(true);
+		nodeManager.sleepOrWait(1500);
 		// temperature sensor
 		if (child->getType() == V_TEMP) {
 			Serial.println("SensorDHT: Read V_TEMP");
